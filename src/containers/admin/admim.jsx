@@ -1,19 +1,33 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { createDemo1Action, createDemo2Action } from '../../redux/actions/test'
+import memoryUtils from '../../utils/memoryUtils'
+import { Navigate } from 'react-router-dom'
+import { Layout } from 'antd';
+import LeftNav from '../../components/left-nav';
+import Header from '../../components/header';
+import { Outlet } from 'react-router-dom'
+const { Footer, Sider, Content } = Layout;
 
-function Admim() {
-  return (
-    <div>admim</div>
-  )
-}
 
-export default connect(
-  state => ({
-    demo: state.testKey  //reducers中index里
-  }),
-  {
-    demo1: createDemo1Action,  //actions里
-    demo2: createDemo2Action,
+export default function Admim() {
+  const user = memoryUtils.user;
+
+  if (!user) {  //没有登录 自动跳转到登录  在render()中
+    return <Navigate to="/login" />
   }
-)(Admim)
+  return (
+    <Layout style={{ height: "100%" }}>
+      <Sider>
+        <LeftNav />
+      </Sider>
+      <Layout>
+        <Header>Header</Header>
+        <Content style={{ margin: "20px", backgroundColor: "white" }}>
+          {/* 二级路由展示区 */}
+          <Outlet />
+        </Content>
+        <Footer style={{ textAlign: "center", color: "#ccc" }}>推荐使用谷歌浏览器，获得更佳操作体验</Footer>
+      </Layout>
+    </Layout>
+  )
+
+}
